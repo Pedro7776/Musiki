@@ -1,20 +1,24 @@
 // Importa o framework Express, que cuida de rotas, requisições e respostas HTTP
-const express = require('express');
+import express from "express"
+// Importa as rotas de música que criamos em outro arquivo (routes/musicRoutes.js) 
+import musicRoutes from "./routes/musicRoutes.js";
+import dotenv from "dotenv"
+dotenv.config()
 
-// Importa as rotas de música que criamos em outro arquivo (routes/musica.routes.js)
-const musicaRoutes = require('./routes/musica.routes'); 
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000;
 const app = express();
 
-app.use(express.json());
+import { ConnectDB } from "./database/database.js";
 
+app.use(express.json());
+ConnectDB()
 app.get('/', (req, res) => {
     res.json({ status: 'Música API' }); 
 });
 
-// Registra todas as rotas de música sob o prefixo "/musicas".
-app.use('/musicas', musicaRoutes); 
+// Registra todas as rotas de música sob o prefixo "/musics".
+app.use('/musics', musicRoutes); 
 
 // 404 primeiro
 app.use((req, res) => {

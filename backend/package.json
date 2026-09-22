@@ -1,16 +1,17 @@
 {
-  "name": "ntask-api",
+  "name": "musiki-api",
   "version": "1.0.0",
   "description": "API de Gestao de tarefas",
   "license": "ISC",
-  "author": "pedro sobrinho",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "start":"node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^18.0.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.10.1"
   }
 }

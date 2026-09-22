@@ -1,6 +1,6 @@
 // O Router do Express permite criar um "mini app" de rotas separado,
 // que depois é "encaixado" no app principal (veja app.use('/tasks', ...) no index.js)
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
 // "Banco de dados" em memória
@@ -87,4 +87,4 @@ router.delete('/:id', (req, res) => {
     res.status(204).send();
 });
 
-module.exports = router;
+export default router 
