@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Musica = require('../models/Musica');
+const Historico = require('../models/Historico');
 
 // GET /musicas
 async function listar(req, res) {
@@ -13,10 +14,39 @@ async function listar(req, res) {
 
 // GET /musicas/aleatoria
 async function aleatoria(req, res) {
+  const deviceId = req.header('x-device-id');
+
+  if (!deviceId) {
+    return res.status(400).json({ error: 'Header "x-device-id" é obrigatório' });
+  }
+
   try {
-    const [musica] = await Musica.aggregate([{ $sample: { size: 1 } }]);
-    if (!musica) return res.status(404).json({ error: 'Nenhuma música cadastrada' });
-    res.json(musica);
+    const umDiaAtras = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const historicoRecente = await Historico.find({
+      deviceId,
+      exibidoEm: { $gte: umDiaAtras },
+    }).select('musica');
+
+    const idsExcluidos = historicoRecente.map((h) => h.musica);
+
+    const [musica] = await Musica.aggregate([
+      { $match: { _id: { $nin: idsExcluidos } } },
+      { $sample: { size: 1 } },
+    ]);
+
+    let escolhida = musica;
+    if (!escolhida) {
+      const [qualquerMusica] = await Musica.aggregate([{ $sample: { size: 1 } }]);
+      escolhida = qualquerMusica;
+    }
+
+    if (!escolhida) {
+      return res.status(404).json({ error: 'Nenhuma música cadastrada' });
+    }
+
+    await Historico.create({ deviceId, musica: escolhida._id });
+
+    res.json(escolhida);
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar música' });
   }
