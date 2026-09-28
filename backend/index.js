@@ -1,32 +1,36 @@
-// Importa o framework Express, que cuida de rotas, requisições e respostas HTTP
+require('dotenv').config(); // precisa ser a primeira linha
+
 const express = require('express');
+const connectDatabase = require('./database'); // pra ajustrar o caminho se o arquivo estiver em outra pasta
+const musicaRoutes = require('./routes/musica.routes');
 
-// Importa as rotas de música que criamos em outro arquivo (routes/musica.routes.js)
-const musicaRoutes = require('./routes/musica.routes'); 
-
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ status: 'Música API' }); 
+  res.json({ status: 'Música API' });
 });
 
-// Registra todas as rotas de música sob o prefixo "/musicas".
-app.use('/musicas', musicaRoutes); 
+app.use('/musicas', musicaRoutes);
 
 // 404 primeiro
 app.use((req, res) => {
-    res.status(404).json({ error: 'Rota não encontrada' });
+  res.status(404).json({ error: 'Rota não encontrada' });
 });
 
-// erro por último // 
+// erro por último
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Erro interno no servidor' });
+  console.error(err.stack);
+  res.status(500).json({ error: 'Erro interno no servidor' });
 });
 
-app.listen(PORT, () => {
+async function start() {
+  await connectDatabase();
+  app.listen(PORT, () => {
     console.log(`Música API - porta ${PORT}`);
-});
+  });
+}
+
+start();
