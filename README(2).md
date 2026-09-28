@@ -90,7 +90,7 @@ A API ficará disponível em `http://localhost:3000`.
 ├── routes/
 │   └── musica.routes.js     # Rotas de /musicas
 ├── database.js              # Conexão com o MongoDB
-├── index.js                 # Ponto de entrada da aplicação
+├── server.js                 # Ponto de entrada da aplicação
 ├── .env                     # Variáveis de ambiente (não versionar)
 ├── .gitignore
 ├── package.json
@@ -205,12 +205,3 @@ Formato padrão de erro:
 {
   "error": "Música não encontrada"
 }
-```
-
-## 👥 Autores
-
-- Seu Nome — [GitHub](https://github.com/seu-usuario)
-
----
-
-Projeto desenvolvido para fins acadêmicos.
