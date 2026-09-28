@@ -14,7 +14,6 @@ const ConnectDB = async () => {
         //     authSource: 'admin'
         // });
         console.log('MongoDB conectado com sucesso!');
-        console.log(`Banco: ${DATABASE_URI}`);
     } catch (error) {
         console.error(' Erro ao conectar ao MongoDB:', error);
         process.exit(1);
