@@ -1,12 +1,12 @@
 import express from "express";
 const router = express.Router();
-import * as musicaController from '../controller/musicacontroller.js';
+import {listarMusicas, buscarMusicaAleatoria, buscarPorId, criarMusica, atualizarMusica, excluirMusica} from '../controller/musicaController.js';
 
-router.get('/', musicaController.listar);
-router.get('/aleatoria', musicaController.aleatoria); // antes de /:id
-router.get('/:id', musicaController.buscarPorId);
-router.post('/', musicaController.criar);
-router.put('/:id', musicaController.atualizar);
-router.delete('/:id', musicaController.excluir);
+router.get('/', listarMusicas);
+router.get('/aleatoria', buscarMusicaAleatoria); // antes de /:id
+router.get('/:id', buscarPorId);
+router.post('/', criarMusica);
+router.put('/:id', atualizarMusica);
+router.delete('/:id', excluirMusica);
 
 export default router 

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Musica from '../models/Musica.js';
 
 // GET /musicas
-async function listar(req, res) {
+async function listarMusicas(req, res) {
   try {
     const musicas = await Musica.find();
     res.json(musicas);
@@ -12,7 +12,7 @@ async function listar(req, res) {
 }
 
 // GET /musicas/aleatoria
-async function aleatoria(req, res) {
+async function buscarMusicaAleatoria(req, res) {
   try {
     const [musica] = await Musica.aggregate([{ $sample: { size: 1 } }]);
     if (!musica) return res.status(404).json({ error: 'Nenhuma música cadastrada' });
@@ -38,7 +38,7 @@ async function buscarPorId(req, res) {
 }
 
 // POST /musicas
-async function criar(req, res) {
+async function criarMusica(req, res) {
   const { titulo, artista } = req.body ?? {};
   if (!titulo || typeof titulo !== 'string' || !titulo.trim()) {
     return res.status(400).json({ error: 'O campo "titulo" é obrigatório' });
@@ -52,16 +52,16 @@ async function criar(req, res) {
 }
 
 // PUT /musicas/:id
-async function atualizar(req, res) {
+async function atualizarMusica(req, res) {
   const { id } = req.params;
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ error: 'ID inválido' });
   }
-  const { titulo, artista } = req.body ?? {};
+  const { titulo, artista, album } = req.body ?? {};
   try {
     const musica = await Musica.findByIdAndUpdate(
       id,
-      { titulo, artista },
+      { titulo, artista, album },
       { new: true, runValidators: true }
     );
     if (!musica) return res.status(404).json({ error: 'Música não encontrada' });
@@ -72,7 +72,7 @@ async function atualizar(req, res) {
 }
 
 // DELETE /musicas/:id
-async function excluir(req, res) {
+async function excluirMusica(req, res) {
   const { id } = req.params;
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ error: 'ID inválido' });
@@ -87,10 +87,10 @@ async function excluir(req, res) {
 }
 
 export { 
-  listar, 
-  aleatoria, 
+  listarMusicas, 
+  buscarMusicaAleatoria, 
   buscarPorId, 
-  criar, 
-  atualizar, 
-  excluir 
+  criarMusica, 
+  atualizarMusica, 
+  excluirMusica
 };
