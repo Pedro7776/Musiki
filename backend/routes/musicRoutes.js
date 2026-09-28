@@ -3,88 +3,88 @@
 import express from "express";
 const router = express.Router();
 
-// "Banco de dados" em memória
-let musicas = [
-    { id: 1, titulo: 'If I Fell', artista: 'The Beatles' },
-    { id: 2, titulo: 'Azul', artista: 'Gal Costa' },
-    { id: 3, titulo: 'I Put A Spell On You', artista: 'Nina Simone' },
-];
-
-let nextId = 4;
-
 // GET /musicas
-router.get('/', (req, res) => {
-    res.json(musicas);
+router.get('/', async (req, res) => {
+  try {
+    res.json(await Musica.find());
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao listar músicas' });
+  }
 });
 
-// GET /musicas/aleatoria
-router.get('/aleatoria', (req, res) => {
-    if (musicas.length === 0) {
-        return res.status(404).json({ error: 'Nenhuma música cadastrada' });
-    }
-
-    const index = Math.floor(Math.random() * musicas.length);
-    res.json(musicas[index]);
+// GET /musicas/aleatoria  (antes de /:id)
+router.get('/aleatoria', async (req, res) => {
+  try {
+    const [musica] = await Musica.aggregate([{ $sample: { size: 1 } }]);
+    if (!musica) return res.status(404).json({ error: 'Nenhuma música cadastrada' });
+    res.json(musica);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar música' });
+  }
 });
 
 // GET /musicas/:id
-router.get('/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const musica = musicas.find((m) => m.id === id);
-
-    if (!musica) {
-        return res.status(404).json({ error: 'Música não encontrada' });
-    }
-
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+  try {
+    const musica = await Musica.findById(id);
+    if (!musica) return res.status(404).json({ error: 'Música não encontrada' });
     res.json(musica);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar música' });
+  }
 });
 
 // POST /musicas
-router.post('/', (req, res) => {
-    const { titulo, artista } = req.body;
-
-    if (!titulo || typeof titulo !== 'string') {
-        return res.status(400).json({ error: 'O campo "titulo" é obrigatório' });
-    }
-
-    const novaMusica = {
-        id: nextId++,
-        titulo,
-        artista: artista || 'Desconhecido',
-    };
-
-    musicas.push(novaMusica);
-    res.status(201).json(novaMusica);
+router.post('/', async (req, res) => {
+  const { titulo, artista } = req.body ?? {};
+  if (!titulo || typeof titulo !== 'string' || !titulo.trim()) {
+    return res.status(400).json({ error: 'O campo "titulo" é obrigatório' });
+  }
+  try {
+    const nova = await Musica.create({ titulo, artista });
+    res.status(201).json(nova);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao criar música' });
+  }
 });
 
 // PUT /musicas/:id
-router.put('/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const musica = musicas.find((m) => m.id === id);
-
-    if (!musica) {
-        return res.status(404).json({ error: 'Música não encontrada' });
-    }
-
-    const { titulo, artista } = req.body;
-
-    if (titulo !== undefined) musica.titulo = titulo;
-    if (artista !== undefined) musica.artista = artista;
-
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+  const { titulo, artista } = req.body ?? {};
+  try {
+    const musica = await Musica.findByIdAndUpdate(
+      id,
+      { titulo, artista },
+      { new: true, runValidators: true }
+    );
+    if (!musica) return res.status(404).json({ error: 'Música não encontrada' });
     res.json(musica);
+  } catch (err) {
+    res.status(400).json({ error: 'Dados inválidos' });
+  }
 });
 
 // DELETE /musicas/:id
-router.delete('/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const index = musicas.findIndex((m) => m.id === id);
-
-    if (index === -1) {
-        return res.status(404).json({ error: 'Música não encontrada' });
-    }
-
-    musicas.splice(index, 1);
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+  try {
+    const musica = await Musica.findByIdAndDelete(id);
+    if (!musica) return res.status(404).json({ error: 'Música não encontrada' });
     res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao excluir música' });
+  }
 });
 
 export default router 
