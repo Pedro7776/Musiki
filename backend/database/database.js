@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const ConnectDB = async () => { 
-    const uri = process.env.MONGODB_URI;
+    const uri = process.env.DATABASE_URI;
     
       if (!uri) {
-        console.error("MONGODB_URI não definida no .env");
+        console.error("DATABASE_URI não definida no .env");
         process.exit(1);
       }
     
