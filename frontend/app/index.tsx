@@ -1,4 +1,3 @@
-
 //para rodar, abra o terminal, escreva: npx expo start --tunnel   escaneie o qr code no seu celular
 
 import { useEffect, useRef } from 'react';
@@ -10,15 +9,15 @@ import { useEffect, useRef } from 'react';
  quando o componente é carregado ou quando alguma coisa muda. o que vai mudar é o horário*/
 
 
-import { Animated, Pressable, StyleSheet, Text, } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View, } from 'react-native';
 /* Animated é o padrão de animações do react
  esse pressable já tava no codigo antes, é por conta de um botão
  stylesheet basicamente o estilo geral da aplicação
  text é puramente texto.
 */
 
-const DAY_COLOR = '#F8E8D8';
-const NIGHT_COLOR = '#473A2F';
+const DAY_COLOR = '#F3DFCD';
+const NIGHT_COLOR = '#403326';
 //essas cores são as saturadas que o thur mandou
 //pesquisei no google qual seria o codigo, pode nao ser exato.
 
@@ -94,22 +93,62 @@ export default function HomeScreen() {
         },
       ]}
     >
-      <Text style={styles.title}>
-        Meu primeiro aplicativo
-      </Text>
-
+      {/*Essa primeira view aqui é do trecho e opções relacionadas*/}
+      <View>
       <Text style={styles.subtitle}>
-        Ebaa
+        "Tente (tente)
+        E não diga que a vitória está perdida
+        Se é de batalhas que se vive a vida
+        Tente outra vez"
       </Text>
+      <Text>- Tente outra vez, Raul Seixas</Text>
 
-      <Pressable
-        style={styles.button}
-        onPress={() => alert(' Palestina Livre')}
-      >
-        <Text style={styles.buttonText}>
-          Clique aqui
-        </Text>
-      </Pressable>
+        <View> {/*Essa view aqui é a barra dos botões com relação à musica do dia*/}
+
+        <Pressable
+          style={styles.button}
+          onPress={() => alert('aqui podia abrir um menu da pessoa escolher em que app abrir a musica')}
+          >
+          <Text style={styles.buttonText}>
+            Botão de escutar a musica
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.button}
+          onPress={() => alert(' Palestina Livre')}
+          >
+          <Text style={styles.buttonText}>
+            Botão de favoritar/salvar a musica
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.button}
+          onPress={() => alert(' vidas trans importam')}
+          >
+          <Text style={styles.buttonText}>
+            Botão de compartilhar o trecho
+          </Text>
+        </Pressable>
+        </View> {/*Fim da view dos botões*/}
+      </View> {/*Fim da view do trecho de musica*/}
+
+      <View> {/*View da barra de navegação*/}
+        <Pressable style={styles.button}>
+          <Text>Trecho diário</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text>Favoritos/salvos</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text>Perfil</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text>Opções</Text>
+        </Pressable>
+      </View>
+
     </Animated.View>
   );
 }
