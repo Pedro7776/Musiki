@@ -9,3 +9,5 @@ const musicaSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('Musica', musicaSchema);
+  { timestamps: true, collection: 'Musics' };
+  

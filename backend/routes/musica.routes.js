@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const musicaController = require('../controllers/musica.controller');
+const musicaController = require('../controller/musicacontroller');
 
 router.get('/', musicaController.listar);
 router.get('/aleatoria', musicaController.aleatoria); // antes de /:id

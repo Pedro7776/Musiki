@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Musica = require('../models/Musica');
-const Historico = require('../models/Historico');
+const Musica = require('../models/musica');
+const Historico = require('../models/historico');
 
 // GET /musicas
 async function listar(req, res) {
