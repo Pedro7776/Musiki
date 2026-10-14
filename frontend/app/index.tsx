@@ -16,44 +16,32 @@ pesquisei no google qual seria o codigo, pode nao ser exato.*/}
 export default utiliza a mesma tela em outros lugares */}
 export default function HomeScreen() {
   return (
-    <SafeAreaView> {/*Essa primeira view aqui é do trecho e opções relacionadas; tem que ser com o SafeAreaView*/}
+    <SafeAreaView style={styles.container}> {/*Essa primeira view aqui é do trecho e opções relacionadas; tem que ser com o SafeAreaView*/}
       <View>
-      <Text style={styles.subtitle}>
-        "Tente (tente)
-        E não diga que a vitória está perdida
-        Se é de batalhas que se vive a vida
-        Tente outra vez"
-      </Text>
-      <Text>- Tente outra vez, Raul Seixas</Text>
-
-        <View> {/*Essa view aqui é a barra dos botões com relação à musica do dia*/}
-
-        <Pressable
-          style={styles.button}
-          onPress={() => alert('aqui podia abrir um menu da pessoa escolher em que app abrir a musica')}
-          >
-          <Text style={styles.buttonText}>
-            Botão de escutar a musica
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.button}
-          onPress={() => alert(' Palestina Livre')}
-          >
-          <Text style={styles.buttonText}>
-            Botão de favoritar/salvar a musica
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.button}
-          onPress={() => alert(' vidas trans importam')}
-          >
-          <Text style={styles.buttonText}>
-            Botão de compartilhar o trecho
-          </Text>
-        </Pressable>
+        <Text style={styles.quote}>
+          {"“Tente (tente)\nE não diga que a vitória está perdida\nSe é de batalhas que se vive a vida\nTente outra vez”"} {/*TODO: Tirar a placeholder e colocar um trecho do nosso banco de dados */}
+        </Text>
+        <Text>- Tente outra vez, Raul Seixas</Text>
+      
+        <View style={styles.row}> {/*Essa view aqui é a barra dos botões com relação à musica do dia*/}
+          <Pressable
+            style={styles.button}
+            onPress={() => alert('aqui podia abrir um menu da pessoa escolher em que app abrir a musica')}
+            >
+              <Text style={styles.buttonText}>Botão de escutar a musica</Text>
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            onPress={() => alert(' Palestina Livre')}
+            >
+              <Text style={styles.buttonText}>Botão de favoritar/salvar a musica</Text>
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            onPress={() => alert(' vidas trans importam')}
+            >
+              <Text style={styles.buttonText}>Botão de compartilhar o trecho</Text>
+          </Pressable>
         </View> {/*Fim da view dos botões*/}
       </View> {/*Fim da view do trecho de musica*/}
 
@@ -81,7 +69,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
   },
 
   title: {
@@ -90,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  subtitle: {
+  quote: { /*Estilização do trecho de música */
     fontSize: 16,
     marginBottom: 30,
   },
@@ -107,4 +94,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
+  row: {
+    flexDirection: "row",
+    alignItems: "center"
+  }
 });
