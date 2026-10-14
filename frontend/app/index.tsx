@@ -1,17 +1,17 @@
-{/*para rodar, abra o terminal, escreva: npx expo start --tunnel   escaneie o qr code no seu celular*/}
+/*para rodar, abra o terminal, escreva: npx expo start --tunnel   escaneie o qr code no seu celular*/
 
 import { Pressable, StyleSheet, Text, View, } from 'react-native';
-{/*o pressable são os nossos botões
+/*o pressable são os nossos botões
  stylesheet estiliza a aplicação
- text é texto*/}
+ text é texto*/
 import { SafeAreaView } from 'react-native-safe-area-context';
-{/*Esse componente é importante porque ele vai manter nossa aplicação fora das áreas importantes do celular, como a barra de notificações e tal*/}
-import { Colors } from '../assets/Colors.js'; {/*Aqui é a importação de cores, criadas em uma constante pra facilitar a utilização e visualização*/}
+/*Esse componente é importante porque ele vai manter nossa aplicação fora das áreas importantes do celular, como a barra de notificações e tal*/
+import { Colors } from '../assets/Colors.js'; /*Aqui é a importação de cores, criadas em uma constante pra facilitar a utilização e visualização*/
 import AntDesign from '@expo/vector-icons/AntDesign'; /*Esses aqui são os ícones da aplicação */
 
 
-{/* a função homescreen basicamente mostra a tela, não tem muito segredo, 
-export default utiliza a mesma tela em outros lugares */}
+/* a função homescreen basicamente mostra a tela, não tem muito segredo, 
+export default utiliza a mesma tela em outros lugares */
 export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}> {/*Essa primeira view aqui é do trecho e opções relacionadas; tem que ser com o SafeAreaView*/}
