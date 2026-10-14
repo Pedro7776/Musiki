@@ -6,11 +6,9 @@ import { Pressable, StyleSheet, Text, View, } from 'react-native';
  text é texto*/}
 import { SafeAreaView } from 'react-native-safe-area-context';
 {/*Esse componente é importante porque ele vai manter nossa aplicação fora das áreas importantes do celular, como a barra de notificações e tal*/}
+import { Colors } from '../assets/Colors.js'; {/*Aqui é a importação de cores, criadas em uma constante pra facilitar a utilização e visualização*/}
+import AntDesign from '@expo/vector-icons/AntDesign'; /*Esses aqui são os ícones da aplicação */
 
-const DAY_COLOR = '#f3dfcd';
-const NIGHT_COLOR = '#403326';
-{/*essas cores são as saturadas que o thur mandou
-pesquisei no google qual seria o codigo, pode nao ser exato.*/}
 
 {/* a função homescreen basicamente mostra a tela, não tem muito segredo, 
 export default utiliza a mesma tela em outros lugares */}
@@ -28,34 +26,34 @@ export default function HomeScreen() {
             style={styles.button}
             onPress={() => alert('aqui podia abrir um menu da pessoa escolher em que app abrir a musica')}
             >
-              <Text style={styles.buttonText}>Botão de escutar a musica</Text>
+              <AntDesign name="play-circle" size={24}/>
           </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => alert(' Palestina Livre')}
             >
-              <Text style={styles.buttonText}>Botão de favoritar/salvar a musica</Text>
+              <AntDesign name="star" size={24}/>
           </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => alert(' vidas trans importam')}
             >
-              <Text style={styles.buttonText}>Botão de compartilhar o trecho</Text>
+              <AntDesign name="share-alt" size={24}/>
           </Pressable>
         </View> {/*Fim da view dos botões*/}
       </View> {/*Fim da view do trecho de musica*/}
 
-      <View> {/*View da barra de navegação*/}
-        <Pressable style={styles.button}>
+      <View style={styles.navbar}> {/*View da barra de navegação*/}
+        <Pressable style={styles.buttonNav}>
           <Text>Trecho diário</Text>
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.buttonNav}>
           <Text>Favoritos/salvos</Text>
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.buttonNav}>
           <Text>Perfil</Text>
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.buttonNav}>
           <Text>Opções</Text>
         </Pressable>
       </View> {/*Fim da view da barra de navegação*/}
@@ -66,6 +64,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: Colors.backgroundLight,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -82,11 +81,19 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
-  button: {
-    paddingVertical: 14,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    backgroundColor: '#007AFF',
+  row: { /*Organiza os botões relacionados ao trecho de música */
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: 'space-between',
+  },
+
+  button: { /*Estilização dos botões relacionados ao trecho diário */
+    borderRadius: 32,
+		width: 44,
+		height: 44,
+    backgroundColor: Colors.buttonsLight,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   buttonText: {
@@ -95,8 +102,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  row: {
-    flexDirection: "row",
-    alignItems: "center"
+  navbar: {
+    flexDirection: "row"
+  },
+
+  buttonNav: {
+
   }
 });
