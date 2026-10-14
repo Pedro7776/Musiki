@@ -69,12 +69,12 @@ async function buscarPorId(req, res) {
 
 // POST /musicas
 async function criar(req, res) {
-  const { titulo, artista } = req.body ?? {};
+  const { titulo, artista, album, trecho, estilo } = req.body ?? {};
   if (!titulo || typeof titulo !== 'string' || !titulo.trim()) {
     return res.status(400).json({ error: 'O campo "titulo" é obrigatório' });
   }
   try {
-    const nova = await Musica.create({ titulo, artista });
+    const nova = await Musica.create(    { titulo, artista, album, trecho, estilo },);
     res.status(201).json(nova);
   } catch (err) {
     res.status(500).json({ error: 'Erro ao criar música' });
@@ -116,17 +116,7 @@ async function excluir(req, res) {
   }
 }
 
-
-// data no formato AAAA-MM-DD, no fuso de São Paulo
-function chaveDia(data = new Date()) {
-  return data.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
-}
-
-// remove campos internos antes de enviar ao front-end
-function publica(musica) {
-  const { _id, __v, createdAt, updatedAt, ...resto } = musica;
-  return resto;
-}
+module.exports = { listar, aleatoria, buscarPorId, criar, atualizar, excluir };
 
 // GET /musicas/do-dia
 async function doDia(req, res) {
@@ -188,5 +178,3 @@ async function doDia(req, res) {
     res.status(500).json({ error: 'Erro ao buscar música do dia' });
   }
 }
-
-module.exports = { listar, aleatoria, doDia, buscarPorId, criar, atualizar, excluir };
