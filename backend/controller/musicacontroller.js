@@ -116,4 +116,77 @@ async function excluir(req, res) {
   }
 }
 
-module.exports = { listar, aleatoria, buscarPorId, criar, atualizar, excluir };
+
+// data no formato AAAA-MM-DD, no fuso de São Paulo
+function chaveDia(data = new Date()) {
+  return data.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+}
+
+// remove campos internos antes de enviar ao front-end
+function publica(musica) {
+  const { _id, __v, createdAt, updatedAt, ...resto } = musica;
+  return resto;
+}
+
+// GET /musicas/do-dia
+async function doDia(req, res) {
+  const deviceId = req.header('x-device-id');
+  if (!deviceId) {
+    return res.status(400).json({ error: 'Header "x-device-id" é obrigatório' });
+  }
+
+  const hoje = chaveDia();
+  const filtro = { trecho: { $exists: true, $ne: '' } };
+
+  try {
+    // já recebeu música hoje? devolve a mesma
+    const jaTem = await Historico.findOne({ deviceId, dia: hoje });
+    if (jaTem) {
+      const musica = await Musica.findById(jaTem.musica).lean();
+      if (musica) return res.json(publica(musica));
+    }
+
+    const total = await Musica.countDocuments(filtro);
+    if (total === 0) {
+      return res.status(404).json({ error: 'Nenhuma música com trecho cadastrada' });
+    }
+
+    // histórico do dispositivo, da mais recente para a mais antiga
+    const historico = await Historico.find({ deviceId, dia: { $type: 'string' } })
+      .sort({ dia: -1 })
+      .select('musica');
+
+    // quantas já saíram no ciclo atual (um ciclo = todas as músicas uma vez)
+    const noCiclo = historico.length % total;
+    const recentes = noCiclo === 0 ? historico.slice(0, 1) : historico.slice(0, noCiclo);
+    const idsExcluidos = recentes.map((h) => h.musica);
+
+    let [escolhida] = await Musica.aggregate([
+      { $match: { ...filtro, _id: { $nin: idsExcluidos } } },
+      { $sample: { size: 1 } },
+    ]);
+
+    // só existe 1 música com trecho: não tem como variar
+    if (!escolhida) {
+      [escolhida] = await Musica.aggregate([{ $match: filtro }, { $sample: { size: 1 } }]);
+    }
+
+    try {
+      await Historico.create({ deviceId, musica: escolhida._id, dia: hoje });
+    } catch (err) {
+      // duas requisições ao mesmo tempo: vale a que gravou primeiro
+      if (err.code === 11000) {
+        const gravada = await Historico.findOne({ deviceId, dia: hoje });
+        const musica = await Musica.findById(gravada.musica).lean();
+        return res.json(publica(musica));
+      }
+      throw err;
+    }
+
+    res.json(publica(escolhida));
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar música do dia' });
+  }
+}
+
+module.exports = { listar, aleatoria, doDia, buscarPorId, criar, atualizar, excluir };

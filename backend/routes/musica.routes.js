@@ -4,6 +4,7 @@ const musicaController = require('../controller/musicacontroller');
 
 router.get('/', musicaController.listar);
 router.get('/aleatoria', musicaController.aleatoria); // antes de /:id
+router.get('/do-dia', musicaController.doDia);
 router.get('/:id', musicaController.buscarPorId);
 router.post('/', musicaController.criar);
 router.put('/:id', musicaController.atualizar);
