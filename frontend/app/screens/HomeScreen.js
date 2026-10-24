@@ -1,14 +1,14 @@
 /*para rodar, abra o terminal, escreva: npx expo start --tunnel   escaneie o qr code no seu celular*/
 
 /*Componentes */
-import { Pressable, StyleSheet, Text, View, } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 /*ícones */
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /*Constantes */
-import { Colors } from '../../assets/Colors.js';
+import { styles } from '../../assets/GlobalStyles.js';
 
 /*Navegação */
 import { useNavigation } from '@react-navigation/native';
@@ -76,64 +76,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.backgroundLight,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  quote: { /*Estilização do trecho de música */
-    fontSize: 20,
-    marginBottom: 30,
-    textAlign: 'center',
-    lineHeight: 30,
-  },
-
-  artist: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-
-  info: {
-    textAlign: 'center',
-  },
-
-  row: { /*Organiza a exibição dos botões relacionados ao trecho de música */
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: 'space-around',
-    marginVertical: 20,
-  },
-
-  button: { /*Estilização dos botões relacionados ao trecho diário */
-    borderRadius: 32,
-		width: 44,
-		height: 44,
-    backgroundColor: Colors.buttonsLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
-  navbar: { /*Autoexplicativo, mas aqui é a estilização da navbar*/
-    /*TODO: tem que deixar essa navbar na parte de baixo da tela.
-    nao sei se é melhor de fazer isso colocando a posição dela em absolute ou o que */
-    flexDirection: "row",
-    backgroundColor: Colors.navbarBgLight,
-    padding: 20,
-    borderRadius: 50,
-  },
-
-  buttonNav: {
-    alignItems: 'center',
-    paddingHorizontal: 10
-  }
-});
