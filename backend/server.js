@@ -1,8 +1,10 @@
+cat > server.js << 'EOF'
 require('dotenv').config(); // precisa ser a primeira linha
 
 const express = require('express');
 const connectDatabase = require('./database'); // pra ajustrar o caminho se o arquivo estiver em outra pasta
 const musicaRoutes = require('./routes/musica.routes');
+const usuarioRoutes = require('./routes/usuario.routes');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -14,6 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/musicas', musicaRoutes);
+app.use('/usuarios', usuarioRoutes);
 
 // 404 primeiro
 app.use((req, res) => {
@@ -34,3 +37,4 @@ async function start() {
 }
 
 start();
+EOF
