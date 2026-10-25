@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: 'white',
+    color: Colors.fontDark,
     fontSize: 16,
     fontWeight: 'bold',
   },
