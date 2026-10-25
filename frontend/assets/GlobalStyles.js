@@ -6,6 +6,8 @@ export const Colors = {
     buttonsLight: '#403326',
     fontLight: '#403326',
     navbarBgLight: '#E1C5AC',
+    highlightColor: '#351b02',
+    inputField: '#fffef8',
     /*Os abaixo são do modo escuro */
     backgroundDark: '#403326',
     buttonsDark: '#F3DFCD',
@@ -21,7 +23,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  /*Aquié a estilização da página inicial */
+  /*Aquié a estilização da página do trecho de música */
   quote: { /*Estilização do trecho de música */
     fontSize: 20,
     marginBottom: 30,
@@ -57,7 +59,6 @@ export const styles = StyleSheet.create({
   buttonText: {
     color: Colors.fontDark,
     fontSize: 16,
-    fontWeight: 'bold',
   },
 
   navbar: { /*Autoexplicativo, mas aqui é a estilização da navbar*/
@@ -72,5 +73,38 @@ export const styles = StyleSheet.create({
   buttonNav: {
     alignItems: 'center',
     paddingHorizontal: 10
-  }
+  },
+
+  /*Aqui entra a estilização das páginas de login e de cadastro. Vão compartilhar muitos estilos kkkk */
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  inputContainer:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: Colors.inputField,
+    padding: 7,
+    marginVertical: 5,
+    borderRadius: 22
+  },
+
+  loginButton: {
+    backgroundColor: Colors.buttonsLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width:250,
+    height: 40,
+    borderRadius: 20,
+    marginVertical: 20,
+  },
+
+  highlight: {
+    color: Colors.highlightColor,
+    fontStyle: 'italic',
+    textDecorationLine: 'underline',
+  },
 });

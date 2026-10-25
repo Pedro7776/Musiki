@@ -5,7 +5,13 @@ import { styles } from '../../assets/GlobalStyles.js';
 /*ícones */
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+/*Navegação */
+import { useNavigation } from '@react-navigation/native';
+
 export default function LoginScreen(){
+
+    const navigate = useNavigation();
+
     return(
         <SafeAreaView style={styles.container}>
                 <Text style={styles.title}>Entrar</Text>
@@ -16,6 +22,7 @@ export default function LoginScreen(){
                     <TextInput
                         style = {styles.input}
                         placeholder='Email ou nome de usuário'
+                        keyboardType="email-address"
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -26,13 +33,25 @@ export default function LoginScreen(){
                         secureTextEntry={true}
                     />
                 </View>
-                <Pressable style={styles.forgot}>
-                    <Text>Esqueceu sua senha?</Text>
+                <Pressable>
+                    <Text style={styles.highlight}>Esqueceu sua senha?</Text>
                 </Pressable>
-                <Pressable style={styles.login}>
-                    <Text>Entrar</Text>
+                <Pressable 
+                style={styles.loginButton}
+                onPress={() => navigate.navigate('Home')}
+                >
+                    <Text style={styles.buttonText}>Entrar</Text>
                 </Pressable>
+                <View style={styles.row}>
+                    <Text>Não tem uma conta?</Text>
+                    <Pressable style={styles.highlight}>
+                        <Text style={styles.highlight}>
+                        Cadastre-se
+                        </Text>
+                        </Pressable>
+                </View>
             </View>
+            {/*TODO: Adicionar opções de login com google e outras redes vinculadas também */}
         </SafeAreaView>
     )
 }
