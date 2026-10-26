@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../assets/GlobalStyles.js';
 
 /*ícones */
+import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /*Navegação */
@@ -11,6 +13,9 @@ import { useNavigation } from '@react-navigation/native';
 export default function LoginScreen(){
 
     const navigate = useNavigation();
+
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     return(
         <SafeAreaView style={styles.container}>
@@ -30,8 +35,18 @@ export default function LoginScreen(){
                     <TextInput
                         style={styles.input}
                         placeholder='Senha'
-                        secureTextEntry={true}
+                        secureTextEntry={!showPassword}
+                        value={password}
+                        onChangeText={setPassword}
                     />
+                    <Pressable
+                    onPress={() => setShowPassword(!showPassword)}>
+                        <AntDesign
+                        name={showPassword ? 'eye-invisible' : 'eye'}
+                        size={22}
+                        color="black"
+                        />
+                    </Pressable>
                 </View>
                 <Pressable>
                     <Text style={styles.highlight}>Esqueceu sua senha?</Text>
