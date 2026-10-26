@@ -42,11 +42,14 @@ export default function LoginScreen(){
                 >
                     <Text style={styles.buttonText}>Entrar</Text>
                 </Pressable>
-                <View style={styles.row}>
+                <View style={styles.row}
+                >
                     <Text>Não tem uma conta?</Text>
-                    <Pressable style={styles.highlight}>
+                    <Pressable style={styles.highlight}
+                    onPress={() => navigate.navigate('Signup')}
+                    >
                         <Text style={styles.highlight}>
-                        Cadastre-se
+                        Criar conta
                         </Text>
                         </Pressable>
                 </View>

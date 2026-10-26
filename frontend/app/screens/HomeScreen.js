@@ -56,8 +56,8 @@ export default function HomeScreen() {
         </Pressable>
 
         <Pressable style={styles.buttonNav}>
-          <FontAwesome name="bookmark" size={24} color="black" />
-          <Text>Favoritos</Text>
+          <FontAwesome name="clock-o" size={24} color="black" />
+          <Text>Histórico</Text>
         </Pressable>
 
         <Pressable //Botão de perfil

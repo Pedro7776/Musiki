@@ -92,6 +92,10 @@ export const styles = StyleSheet.create({
     borderRadius: 22
   },
 
+  input: {
+    width: 250
+  },
+
   loginButton: {
     backgroundColor: Colors.buttonsLight,
     alignItems: 'center',
