@@ -1,5 +1,4 @@
-cat > models/usuario.js << 'EOF'
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const usuarioSchema = new mongoose.Schema(
   {
@@ -8,8 +7,10 @@ const usuarioSchema = new mongoose.Schema(
     // sparse: o email é opcional, então vários usuários sem email não colidem
     email: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   },
-  { timestamps: true }
+  { 
+    collection: "Users",
+    timestamps: true 
+  }
 );
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
-EOF
+export default mongoose.model('Usuario', usuarioSchema);

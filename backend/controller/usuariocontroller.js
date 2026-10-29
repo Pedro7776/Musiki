@@ -1,7 +1,6 @@
-cat > controller/usuariocontroller.js << 'EOF'
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Usuario = require('../models/usuario');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import Usuario from '../models/usuario.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SENHA_MINIMA = 6;
@@ -79,5 +78,55 @@ async function cadastrar(req, res) {
   }
 }
 
-module.exports = { cadastrar };
-EOF
+async function logar(req, res) {
+  const { usernameOuEmail, senha } = req.body ?? {};
+
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ error: 'JWT_SECRET não configurado no servidor' });
+  }
+
+  if (typeof usernameOuEmail !== 'string' || !usernameOuEmail.trim()) {
+    return res.status(400).json({ error: 'O campo "username ou email" é obrigatório e não pode ser vazio' });
+  }
+
+  if (typeof senha !== 'string' || !senha.trim()) {
+    return res.status(400).json({ error: 'O campo "senha" é obrigatório e não pode ser vazio' });
+  }
+
+  try {
+    const usuarioEncontrado = await Usuario.findOne({
+      $or: [
+        { email: usernameOuEmail.toLowerCase() },
+        { username: usernameOuEmail }
+      ]
+    })
+
+    if(!usuarioEncontrado){
+      return res.status(400).json({ error: 'Senha ou usuário incorreto'})
+    }
+
+    const senhaCerta = await bcrypt.compare(senha, usuarioEncontrado.senha)
+    if(!senhaCerta){
+      return res.status(400).json({ error: 'Senha ou usuário incorreto'})
+    }
+
+    
+    const token = jwt.sign(
+      { id: usuarioEncontrado._id.toString(), username: usuarioEncontrado.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({ token, username: usuarioEncontrado.username });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ error: 'Username ou email já está em uso' });
+    }
+    res.status(500).json({ error: 'Erro ao cadastrar usuário' });
+  }
+}
+
+export { 
+  cadastrar,
+  logar
+};

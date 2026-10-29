@@ -1,9 +1,9 @@
-cat > routes/usuario.routes.js << 'EOF'
-const express = require('express');
+import express from "express";
 const router = express.Router();
-const usuarioController = require('../controller/usuariocontroller');
 
-router.post('/', usuarioController.cadastrar);
+import { cadastrar, logar } from "../controller/usuariocontroller.js";
 
-module.exports = router;
-EOF
+router.post('/cadastrar', cadastrar);
+router.post('/logar', logar)
+
+export default router
