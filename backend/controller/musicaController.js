@@ -20,17 +20,16 @@ async function buscarMusicaDoDia(req, res) {
       return res.status(200).json({ musica: musicaLimpa })
     }
 
-    const pipeline = [];
-    if(usuario.musicaDoDia.musica) {
-      pipeline.push({
+    const [musicaRaw] = await Musica.aggregate([
+      {
         $match: {
-          _id: { $nin: usuario.historico } 
+        _id: { $nin: usuario.historico }
         }
-      });
-    }
-    pipeline.push({ $sample: { size: 1 } });
-
-    const [musicaRaw] = await Musica.aggregate(pipeline);
+      },
+      {
+        $sample: { size: 1 }
+      }
+    ]);
 
     if(!musicaRaw){
       return res.status(404).json({ error: 'Nenhuma música cadastrada' })
@@ -42,7 +41,7 @@ async function buscarMusicaDoDia(req, res) {
         $set: {
           musicaDoDia: {
             musica: musicaRaw._id,
-            dia: hoje
+            data: hoje
           }
         },
         $push: {
