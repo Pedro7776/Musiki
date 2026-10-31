@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Musica from "../models/musica.js"
 
-async function buscarMusicaAleatoria(req, res) {
+async function buscarMusicaDoDia(req, res) {
   try {
     const [musica] = await Musica.aggregate([{ $sample: { size: 1 } }]);
     if (!musica) return res.status(404).json({ error: 'Nenhuma música cadastrada' });
@@ -13,5 +13,5 @@ async function buscarMusicaAleatoria(req, res) {
 }
 
 export { 
-  buscarMusicaAleatoria 
+  buscarMusicaDoDia 
 };

@@ -1,8 +1,9 @@
 import express from "express";
 const router = express.Router();
 
-import { buscarMusicaAleatoria } from "../controller/musicacontroller.js";
+import { buscarMusicaDoDia } from "../controller/musicacontroller.js";
+import autenticaRota from "../services/autenticaRota.js";
 
-router.get('/aleatoria', buscarMusicaAleatoria);
+router.get('/diaria', autenticaRota, buscarMusicaDoDia);
 
 export default router 
