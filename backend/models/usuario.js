@@ -7,7 +7,7 @@ const usuarioSchema = new mongoose.Schema(
     // sparse: o email é opcional, então vários usuários sem email não colidem
     email: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
     // Array de referencias 
-    historico: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Musica' }],
+    historico: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Musica', default: [] }],
     // Referencia a musica
     musicaDoDia: {
       musica: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' },
