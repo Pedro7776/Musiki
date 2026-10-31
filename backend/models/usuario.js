@@ -6,6 +6,10 @@ const usuarioSchema = new mongoose.Schema(
     senha: { type: String, required: true }, // aqui fica sempre o hash do bcrypt
     // sparse: o email é opcional, então vários usuários sem email não colidem
     email: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
+    // Array de referencias 
+    historico: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Musica' }],
+    // Referencia a musica
+    musicaDoDia: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' }
   },
   { 
     collection: "Users",
