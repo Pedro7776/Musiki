@@ -11,7 +11,7 @@ const usuarioSchema = new mongoose.Schema(
     // Referencia a musica
     musicaDoDia: {
       musica: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' },
-      data: { type: Date, required: true }
+      data: { type: Date, required: true, default: 0 }
     }
   },
   { 
