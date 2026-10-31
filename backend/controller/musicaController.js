@@ -9,8 +9,8 @@ async function buscarMusicaDoDia(req, res) {
     }
 
     const hoje = new Date().setHours(0,0,0,0)
-    const ultimoAcesso = usuario.musicaDoDia?.dia 
-      ? new Date(usuario.musicaDoDia.dia).setHours(0, 0, 0, 0) 
+    const ultimoAcesso = usuario.musicaDoDia?.data 
+      ? new Date(usuario.musicaDoDia.data).setHours(0, 0, 0, 0) 
       : 0;
 
     if(usuario.musicaDoDia.musica && ultimoAcesso >= hoje){
