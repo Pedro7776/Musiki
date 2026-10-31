@@ -9,7 +9,10 @@ const usuarioSchema = new mongoose.Schema(
     // Array de referencias 
     historico: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Musica' }],
     // Referencia a musica
-    musicaDoDia: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' }
+    musicaDoDia: {
+      musica: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' },
+      data: { type: Date, required: true }
+    }
   },
   { 
     collection: "Users",
