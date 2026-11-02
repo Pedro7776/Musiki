@@ -8,6 +8,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+var OTPEmailList = new Map()
+
 const sendEmail = async (recipientID) => {
     try {
         await transporter.verify();
@@ -19,10 +21,24 @@ const sendEmail = async (recipientID) => {
             text: `oii ${OTP}`, // plain text body
             html: "<b>Hello world?</b>", // HTML body
         });
+        OTPEmailList.set(recipientID, OTP)
+        setTimeout(() => {
+            OTPEmailList.delete(recipientID)
+        }, 1000 * 60 * 5)
 
         console.log("Message sent: %s", info.messageId);
-    } catch (err) {
+    }catch(err) {
         console.error("Error while sending mail:", err);
+    }
+}
+
+const checkOTP = (recipientID, code) => {
+    try{
+        if(OTPEmailList.get(recipientID) == code){
+            console.log("ACERTOOU")
+        }
+    }catch(err) {
+
     }
 }
 
