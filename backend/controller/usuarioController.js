@@ -134,7 +134,7 @@ async function enviarEmail(req, res) {
     if(!usuarioEncontrado){
       return res.status(200)
     }
-    sendEmail(email)
+    await sendEmail(email)
     res.status(200)
   } catch(err) {
     res.status(500).json({ error: 'Erro ao enviar o email' })
