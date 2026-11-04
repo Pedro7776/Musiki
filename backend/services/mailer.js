@@ -1,3 +1,6 @@
+import { configDotenv } from "dotenv";
+configDotenv()
+
 import nodemailer from "nodemailer"
 
 const transporter = nodemailer.createTransport({
@@ -19,7 +22,7 @@ const sendEmail = async (recipientID) => {
             to: recipientID,
             subject: "Recuperar senha", // subject line
             text: `oii ${OTP}`, // plain text body
-            html: "<b>Hello world?</b>", // HTML body
+            html: `<b>${OTP}</b>`, // HTML body
         });
         OTPEmailList.set(recipientID, OTP)
         setTimeout(() => {

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/usuario.js';
+import { sendEmail } from '../services/mailer.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SENHA_MINIMA = 6;
@@ -126,8 +127,23 @@ async function logar(req, res) {
   }
 }
 
+async function enviarEmail(req, res) {
+  try {
+    const { email } = req.body
+    const usuarioEncontrado = Usuario.findOne({ email: email })
+    if(!usuarioEncontrado){
+      return res.status(200)
+    }
+    sendEmail(email)
+    res.status(200)
+  } catch(err) {
+    res.status(500).json({ error: 'Erro ao enviar o email' })
+  } 
+}
+
 export { 
   cadastrar,
-  logar
+  logar,
+  enviarEmail
 };
 
