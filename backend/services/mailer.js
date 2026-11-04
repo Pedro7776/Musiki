@@ -11,7 +11,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// TODO: Mudar essa estrutura pra um Redis
 var OTPEmailList = new Map()
+var ChangePassTokens = new Map()
 
 const sendEmail = async (recipientID) => {
     try {
@@ -27,7 +29,7 @@ const sendEmail = async (recipientID) => {
         OTPEmailList.set(recipientID, OTP)
         setTimeout(() => {
             OTPEmailList.delete(recipientID)
-        }, 1000 * 60 * 5)
+        }, 1000 * 60 * 15)
 
         console.log("Message sent: %s", info.messageId);
     }catch(err) {
@@ -35,23 +37,41 @@ const sendEmail = async (recipientID) => {
     }
 }
 
-const checkOTP = (recipientID, code) => {
+const checkOTP = (email, code) => {
     try{
-        if(OTPEmailList.get(recipientID) == code){
-            console.log("ACERTOOU")
+        if(OTPEmailList.get(email) == code){
+            OTPEmailList.delete(email)
+            ChangePassTokens.set(email, generateRandomToken())
+            setTimeout(() => {
+                ChangePassTokens.delete(email)
+            }, 1000 * 60 * 5)
         }
+        return { ok: true }
     }catch(err) {
-
+        return err
     }
+}
+
+const generateRandomToken = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var code = ''
+    for(var i = 0; i <= 32; i++){
+        code += characters.charAt(Math.random() * characters.length)
+    }
+    return code
 }
 
 const generateOTP = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     var code = ''
     for(var i = 0; i <= 6; i++){
-        code += characters.charAt(Math.random() * 36)
+        code += characters.charAt(Math.random() * characters.length)
     }
     return code
 }
 
-export { sendEmail }
+export { 
+    sendEmail,
+    checkOTP,
+    ChangePassTokens
+}
