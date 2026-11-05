@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/usuario.js';
-import { ChangePassTokens, checkOTP, sendEmail } from '../services/mailer.js';
+import { checkChangePassToken, checkOTP, sendEmail } from '../services/mailer.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SENHA_MINIMA = 6;
@@ -21,15 +21,7 @@ async function cadastrar(req, res) {
     return res.status(400).json({ error: 'O campo "username" é obrigatório e não pode ser vazio' });
   }
 
-  // senha: obrigatória, não vazia e com tamanho válido
-  if (typeof senha !== 'string' || !senha.trim()) {
-    return res.status(400).json({ error: 'O campo "senha" é obrigatório e não pode ser vazio' });
-  }
-  if (senha.length < SENHA_MINIMA || senha.length > SENHA_MAXIMA) {
-    return res.status(400).json({
-      error: `A senha deve ter entre ${SENHA_MINIMA} e ${SENHA_MAXIMA} caracteres`,
-    });
-  }
+  
 
   // email: opcional, mas, se vier, não pode ser vazio e precisa ter formato válido
   let emailLimpo;
@@ -55,7 +47,7 @@ async function cadastrar(req, res) {
     }
 
     // criptografa a senha (10 = custo do bcrypt)
-    const senhaHash = await bcrypt.hash(senha, 10);
+    const senhaHash = hashSenha(senha)
 
     const dados = { username: usernameLimpo, senha: senhaHash };
     if (emailLimpo) dados.email = emailLimpo;
@@ -161,10 +153,43 @@ function checarOTP(req, res) {
   }
 }
 
+async function mudarSenha(req, res) {
+  try{
+    const { email, token, novaSenha } = req.body
+    const resultado = checkChangePassToken(email, token)
+    if(resultado.ok){
+      const senhaHash = hashSenha(novaSenha)
+      await Usuario.findOneAndUpdate({ email: email }, { senha: senhaHash })
+      return res.status(200)
+    }
+    return res.status(500).json({
+      error: 'Acesso a mudança de senha negado'
+    })
+  }catch(err) {
+    res.status(500).json({
+      error: 'Erro durante mudança de senha'
+    })
+  }
+}
+
+async function hashSenha(senha) {
+  // senha: obrigatória, não vazia e com tamanho válido
+  if (typeof senha !== 'string' || !senha.trim()) {
+    return res.status(400).json({ error: 'O campo "senha" é obrigatório e não pode ser vazio' });
+  }
+  if (senha.length < SENHA_MINIMA || senha.length > SENHA_MAXIMA) {
+    return res.status(400).json({
+      error: `A senha deve ter entre ${SENHA_MINIMA} e ${SENHA_MAXIMA} caracteres`,
+    });
+  }
+  return await bcrypt.hash(senha, 10);
+}
+
 export { 
   cadastrar,
   logar,
   enviarEmail,
-  checarOTP
+  checarOTP,
+  mudarSenha
 };
 
