@@ -55,6 +55,18 @@ const checkOTP = (email, code) => {
     }
 }
 
+const checkChangePassToken = (email, token) => {
+    try {
+        if(ChangePassTokens.get(email) == token){
+            ChangePassTokens.delete(email)
+            return { ok: true }
+        }
+        return { ok: false }
+    }catch(err) {
+        return { error: 'Falha ao autenticar token'}
+    }
+}
+
 const generateRandomToken = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     var code = ''
@@ -76,5 +88,5 @@ const generateOTP = () => {
 export { 
     sendEmail,
     checkOTP,
-    ChangePassTokens
+    checkChangePassToken
 }
