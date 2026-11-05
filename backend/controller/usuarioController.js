@@ -47,7 +47,11 @@ async function cadastrar(req, res) {
     }
 
     // criptografa a senha (10 = custo do bcrypt)
-    const senhaHash = hashSenha(senha)
+    const senhaHash = await hashSenha(senha)
+
+    if(senhaHash.error){
+      return res.status(500).json({error: senhaHash.error})
+    }
 
     const dados = { username: usernameLimpo, senha: senhaHash };
     if (emailLimpo) dados.email = emailLimpo;
@@ -63,7 +67,7 @@ async function cadastrar(req, res) {
 
     res.status(201).json({ token, username: novo.username });
   } catch (err) {
-    // dois cadastros iguais ao mesmo tempo: o índice único do banco barra o segundo
+    console.log(err)
     if (err.code === 11000) {
       return res.status(409).json({ error: 'Username ou email já está em uso' });
     }
@@ -159,6 +163,9 @@ async function mudarSenha(req, res) {
     const resultado = checkChangePassToken(email, token)
     if(resultado.ok){
       const senhaHash = hashSenha(novaSenha)
+      if(senhaHash.error){
+        return res.status(500).json({error: senhaHash.error})
+      }
       await Usuario.findOneAndUpdate({ email: email }, { senha: senhaHash })
       return res.status(200)
     }
@@ -166,6 +173,8 @@ async function mudarSenha(req, res) {
       error: 'Acesso a mudança de senha negado'
     })
   }catch(err) {
+    // TODO: Corrigir erro q por enquanto nn sei qual é, dps eu vejo :P
+    console.log(err)
     res.status(500).json({
       error: 'Erro durante mudança de senha'
     })
@@ -175,12 +184,10 @@ async function mudarSenha(req, res) {
 async function hashSenha(senha) {
   // senha: obrigatória, não vazia e com tamanho válido
   if (typeof senha !== 'string' || !senha.trim()) {
-    return res.status(400).json({ error: 'O campo "senha" é obrigatório e não pode ser vazio' });
+    return { error: 'O campo "senha" é obrigatório e não pode ser vazio' }
   }
   if (senha.length < SENHA_MINIMA || senha.length > SENHA_MAXIMA) {
-    return res.status(400).json({
-      error: `A senha deve ter entre ${SENHA_MINIMA} e ${SENHA_MAXIMA} caracteres`,
-    });
+    return { error: `A senha deve ter entre ${SENHA_MINIMA} e ${SENHA_MAXIMA} caracteres`,}
   }
   return await bcrypt.hash(senha, 10);
 }
