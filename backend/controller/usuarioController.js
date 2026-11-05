@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/usuario.js';
-import { sendEmail } from '../services/mailer.js';
+import { ChangePassTokens, checkOTP, sendEmail } from '../services/mailer.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SENHA_MINIMA = 6;
@@ -141,9 +141,30 @@ async function enviarEmail(req, res) {
   } 
 }
 
+function checarOTP(req, res) {
+  try{
+    const { email, OTP } = req.body
+    const resultado = checkOTP(email, OTP)
+    if(resultado.ok){
+      res.status(200).json({
+        token: resultado.token
+      })
+    }else{
+      res.status(500).json({
+        error: 'Código enviado incorreto'
+      })
+    }
+  }catch(err){
+    res.status(500).json({
+      error: 'Erro ao verificar código'
+    })
+  }
+}
+
 export { 
   cadastrar,
   logar,
-  enviarEmail
+  enviarEmail,
+  checarOTP
 };
 

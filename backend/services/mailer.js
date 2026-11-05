@@ -34,6 +34,7 @@ const sendEmail = async (recipientID) => {
         console.log("Message sent: %s", info.messageId);
     }catch(err) {
         console.error("Error while sending mail:", err);
+        return {error: 'Erro ao enviar email'}
     }
 }
 
@@ -41,12 +42,14 @@ const checkOTP = (email, code) => {
     try{
         if(OTPEmailList.get(email) == code){
             OTPEmailList.delete(email)
-            ChangePassTokens.set(email, generateRandomToken())
+            const changePassToken = generateRandomToken()
+            ChangePassTokens.set(email, changePassToken)
             setTimeout(() => {
                 ChangePassTokens.delete(email)
             }, 1000 * 60 * 5)
+            return { ok: true, token: changePassToken }
         }
-        return { ok: true }
+        return { error: 'Código enviado incorreto' }
     }catch(err) {
         return err
     }
