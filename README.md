@@ -1,207 +1,117 @@
 # Musiki
 
-Musiki é um aplicativo mobile pensado para transformar o gosto musical diário em conteúdo compartilhável. Todos os dias, pela manhã, o app seleciona um trecho aleatório de uma música, exibe o nome da faixa, o artista ou banda e oferece uma forma simples de compartilhar esse momento com amigos e seguidores nas redes sociais.
-
-## Ideia do projeto
-
-O objetivo é criar uma experiência leve e divertida em que o usuário receba, diariamente, uma citação musical inspirada por uma música aleatória do catálogo. Em vez de apenas ouvir, a pessoa pode descobrir uma frase marcante, salvar o momento e compartilhar o trecho do dia com outras pessoas.
-
-A proposta principal é:
-
-- selecionar uma música aleatoriamente
-- mostrar um trecho curto da letra
-- exibir o nome da música e o artista/banda
-- permitir que o usuário compartilhe esse trecho em redes sociais
-- criar uma rotina de descoberta musical todos os dias pela manhã
-
-## Visão geral da solução
-
-O projeto é dividido em duas partes:
-
-- Backend: API REST em Node.js com Express para gerenciar músicas e fornecer trechos aleatórios.
-- Frontend: aplicativo mobile desenvolvido com React Native e Expo para apresentar a música do dia e o compartilhamento.
+Projeto em desenvolvimento composto por uma API REST e um aplicativo Expo. A API oferece cadastro e login de usuários e retorna uma música diária escolhida do catálogo do MongoDB. O aplicativo ainda está no estágio inicial do template Expo e não está conectado à API.
 
 ## Tecnologias
 
-- Node.js
-- Express
-- MongoDB + Mongoose
-- React Native
-- Expo
-- TypeScript
+- Backend: Node.js, Express 5, MongoDB, Mongoose, JWT e Nodemailer.
+- Frontend: React Native, Expo SDK 54, Expo Router e TypeScript.
 
-## Estrutura do projeto
+## Estrutura
 
-```bash
+```text
 Musiki/
 ├── backend/
+│   ├── controller/
 │   ├── database/
-│   │   └── database.js
+│   ├── models/
 │   ├── routes/
-│   │   └── musicRoutes.js
-│   ├── .env
-│   ├── index.js
-│   └── package.json
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── constants/
-│   ├── hooks/
-│   ├── assets/
-│   ├── package.json
-│   └── tsconfig.json
-├── README.md
-└── .gitignore
+│   ├── services/
+│   ├── .env.example
+│   └── server.js
+└── frontend/
+    ├── app/
+    ├── assets/
+    ├── components/
+    ├── hooks/
+    └── package.json
 ```
 
 ## Requisitos
 
-Antes de iniciar, certifique-se de ter instalado:
+- Node.js e npm.
+- MongoDB local ou uma instância MongoDB Atlas.
+- Para executar em dispositivo: Expo Go ou um emulador Android/iOS.
 
-- Node.js 18 ou superior
-- npm
-- MongoDB local ou uma string de conexão MongoDB Atlas
-- Expo Go no celular, ou um emulador Android/iOS
+## Backend
 
-## Configuração do backend
-
-1. Abra o terminal e entre na pasta do backend:
+No diretório `backend`, instale as dependências e crie seu arquivo de ambiente a partir do exemplo:
 
 ```bash
-cd Musiki/backend
-```
-
-2. Instale as dependências:
-
-```bash
+cd backend
 npm install
 ```
 
-3. Crie um arquivo `.env` dentro de `backend/` com a seguinte configuração:
+Copie `backend/.env.example` para `backend/.env` e preencha as variáveis:
 
 ```env
 PORT=3000
 DATABASE_URI=mongodb://localhost:27017/musiki
+JWT_SECRET=defina-um-segredo-longo-e-aleatorio
+SMTP_USER=seu-email@gmail.com
+SMTP_PASS=sua-senha-de-aplicativo
 ```
 
-Se estiver usando MongoDB Atlas, substitua pela URL fornecida pelo serviço.
+`SMTP_USER` e `SMTP_PASS` são necessários para o envio de e-mail de recuperação de senha. Use uma senha de aplicativo do Gmail. `PORT` define a porta da API (o padrão é `3000`).
 
-4. Inicie a API:
+Inicie o servidor:
 
 ```bash
 npm start
 ```
 
-A API estará disponível em:
+A API ficará disponível em `http://localhost:3000` (ou na porta configurada). O servidor só inicia com uma conexão válida ao MongoDB.
+
+### Catálogo de músicas
+
+O modelo de música tem os campos `titulo` (obrigatório), `artista` e `album`. As músicas ficam na coleção `Musics`. Atualmente não há endpoints para cadastrar ou administrar o catálogo; os documentos precisam ser inseridos diretamente no MongoDB. A rota de música diária retorna erro 404 quando não há músicas elegíveis.
+
+### Rotas
+
+Todas as rotas abaixo usam o prefixo `http://localhost:3000`.
+
+| Método | Rota | Acesso | Descrição |
+| --- | --- | --- | --- |
+| `POST` | `/usuarios/cadastrar` | Público | Cadastra usuário; recebe `username`, `senha` e `email` opcional. |
+| `POST` | `/usuarios/logar` | Público | Autentica com `usernameOuEmail` e `senha`; retorna token JWT e username. |
+| `POST` | `/usuarios/enviar-email` | Público | Solicita o envio de código de recuperação; recebe `email`. |
+| `POST` | `/usuarios/checar-otp` | Público | Valida o código; recebe `email` e `OTP`. |
+| `POST` | `/usuarios/mudar-senha` | Público | Recebe `email`, `token` de recuperação e `novaSenha`. |
+| `GET` | `/musicas/diaria` | JWT | Retorna a música diária do usuário autenticado. |
+
+A rota protegida espera o cabeçalho `Authorization: Bearer <token>`. A música diária é mantida para o usuário durante o dia; a seleção evita as músicas presentes em seu histórico recente (até 10 itens).
+
+Exemplo de cadastro:
 
 ```bash
-http://localhost:3000
-```
-
-## Rotas da API
-
-### Base
-
-- `GET /` → mensagem de status da API
-
-### Músicas
-
-- `GET /musics` → lista todas as músicas
-- `GET /musics/aleatoria` → retorna uma música aleatória
-- `GET /musics/:id` → busca uma música por id
-- `POST /musics` → cria uma nova música
-- `PUT /musics/:id` → atualiza uma música
-- `DELETE /musics/:id` → remove uma música
-
-### Exemplo de criação de música
-
-```bash
-curl -X POST http://localhost:3000/musics \
+curl -X POST http://localhost:3000/usuarios/cadastrar \
   -H "Content-Type: application/json" \
-  -d '{
-    "titulo": "Bohemian Rhapsody",
-    "artista": "Queen"
-  }'
+  -d '{"username":"ana","senha":"senha-segura","email":"ana@example.com"}'
 ```
 
-## Configuração do frontend
-
-1. Abra um novo terminal e entre na pasta do frontend:
+Exemplo de consulta da música diária:
 
 ```bash
-cd Musiki/frontend
+curl http://localhost:3000/musicas/diaria \
+  -H "Authorization: Bearer SEU_TOKEN_JWT"
 ```
 
-2. Instale as dependências:
+## Frontend
+
+Em outro terminal, instale as dependências e inicie o Expo:
 
 ```bash
+cd frontend
 npm install
-```
-
-3. Inicie o app Expo:
-
-```bash
 npm start
 ```
 
-Ou, como indicado no app, pode ser usado:
+Use o QR Code com o Expo Go ou selecione um emulador no menu do Expo. Para executar diretamente em uma plataforma:
 
 ```bash
-npx expo start --tunnel
+npm run android
+npm run ios
+npm run web
 ```
 
-Em seguida, escaneie o QR Code com o Expo Go no celular ou execute em um emulador.
-
-## Fluxo recomendado de execução
-
-Para rodar o projeto completo, execute em terminais separados:
-
-```bash
-cd Musiki/backend
-npm start
-```
-
-```bash
-cd Musiki/frontend
-npm start
-```
-
-## Observações
-
-- O backend depende de uma conexão ativa com MongoDB.
-- Se o banco não estiver acessível, a API não iniciará corretamente.
-- O frontend foi configurado com Expo Router e pode ser usado em desenvolvimento local em dispositivos móveis ou navegador.
-
-## Funcionalidades previstas
-
-- seleção aleatória de música por dia
-- exibição de um trecho da letra em destaque
-- apresentação do nome da música e do artista/banda
-- botão de compartilhar para redes sociais
-- experiência visual simples e amigável para uso diário
-- armazenamento de músicas no backend para alimentar o sistema
-
-## Fluxo de uso
-
-1. O usuário abre o app pela manhã.
-2. O sistema escolhe uma música aleatória do catálogo.
-3. A música do dia é exibida com:
-   - nome da música
-   - nome do artista ou banda
-   - trecho selecionado da letra
-4. O usuário pode copiar ou compartilhar o conteúdo em redes sociais.
-5. A rotina repete todos os dias com uma nova música.
-
-## Possíveis melhorias futuras
-
-- agendamento automático do trecho do dia
-- personalização por gênero musical
-- histórico de músicas compartilhadas
-- geração de imagens para postar no Instagram ou WhatsApp
-- integração com redes sociais e deep links
-- autenticação de usuários
-- busca por título ou artista
-
-## Licença
-
-Este projeto está em desenvolvimento e pode ser ajustado conforme as necessidades do time ou da disciplina.
+O app atual contém telas iniciais de exemplo do Expo Router; login, música diária e integração com o backend ainda não estão implementados no frontend. Para validar o estilo do código, execute `npm run lint` dentro de `frontend`.
