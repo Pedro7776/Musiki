@@ -4,18 +4,22 @@
 import { createNativeStackNavigator } from 'expo-router/build/react-navigation/native-stack';
 
 /*Telas */
+import ForgotScreen from './screens/ForgotScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
       <Stack.Navigator>
+        <Stack.Screen name='Welcome' component={WelcomeScreen}/>
         <Stack.Screen name='Login' component={LoginScreen}/>
         <Stack.Screen name='Home' component={HomeScreen}/>
         <Stack.Screen name='Signup' component={SignupScreen}/>
+        <Stack.Screen name='Forgot' component={ForgotScreen}/>
       </Stack.Navigator>
   );
 }

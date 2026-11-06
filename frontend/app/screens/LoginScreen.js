@@ -48,7 +48,9 @@ export default function LoginScreen(){
                         />
                     </Pressable>
                 </View>
-                <Pressable>
+                <Pressable
+                onPress={() => navigate.navigate('Forgot')}
+                >
                     <Text style={styles.highlight}>Esqueceu sua senha?</Text>
                 </Pressable>
                 <Pressable 
