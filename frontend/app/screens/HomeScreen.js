@@ -11,7 +11,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { styles } from '../../assets/GlobalStyles.js';
 
 /*Navegação */
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
 
 /*Exporta a nossa HomeScreen pra gente poder utilizar ela lá */
 export default function HomeScreen() {
@@ -19,15 +19,15 @@ export default function HomeScreen() {
     const navigate = useNavigation();
 
   return (
-    <SafeAreaView style={styles.container}> {/*Essa primeira view aqui é do trecho e opções relacionadas; tem que ser com o SafeAreaView pra manter fora de onde pode interromper*/}
+    <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.quote}>
-          {"“Tente (tente)\nE não diga que a vitória está perdida\nSe é de batalhas que se vive a vida\nTente outra vez”"} {/*TODO: Tirar a placeholder e colocar um trecho do nosso banco de dados */}
+          {"“Tente (tente)\nE não diga que a vitória está perdida\nSe é de batalhas que se vive a vida\nTente outra vez”"}
         </Text>
         <Text style={styles.artist}>Raul Seixas</Text>
         <Text style={styles.info}>Tente outra vez - MPB</Text>
       
-        <View style={styles.row}> {/*Essa view aqui é a barra dos botões com relação à musica do dia*/}
+        <View style={styles.row}>
           <Pressable
             style={styles.button}
             onPress={() => alert('aqui podia abrir um menu da pessoa escolher em que app abrir a musica')}
@@ -46,10 +46,10 @@ export default function HomeScreen() {
             >
               <AntDesign name="share-alt" size={24} color={"white"}/>
           </Pressable>
-        </View> {/*Fim da view dos botões*/}
-      </View> {/*Fim da view do trecho de musica*/}
+        </View>
+      </View>
 
-      <View style={styles.navbar}> {/*View da barra de navegação*/}
+      <View style={styles.navbar}>
         <Pressable style={styles.buttonNav}>
           <FontAwesome name="music" size={24} color="black" />
           <Text>Trecho</Text>
@@ -71,7 +71,7 @@ export default function HomeScreen() {
           <FontAwesome name="gear" size={24} color="black" />
           <Text>Opções</Text>
         </Pressable>
-      </View> {/*Fim da view da barra de navegação*/}
+      </View>
 
     </SafeAreaView>
   );

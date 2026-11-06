@@ -8,7 +8,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 /*Navegação */
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
 
 export default function LoginScreen(){
 

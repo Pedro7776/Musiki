@@ -1,7 +1,7 @@
 /*para rodar, abra o terminal, escreva: npx expo start --tunnel   escaneie o qr code no seu celular*/
 
 /*Navegação entre páginas */
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from 'expo-router/build/react-navigation/native-stack';
 
 /*Telas */
 import HomeScreen from './screens/HomeScreen';
