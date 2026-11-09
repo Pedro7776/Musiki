@@ -12,7 +12,8 @@ const usuarioSchema = new mongoose.Schema(
     musicaDoDia: {
       musica: { type: mongoose.Schema.Types.ObjectId, ref: 'Musica' },
       data: { type: Date, required: true, default: 0 }
-    }
+    },
+    refreshToken: { type: String }
   },
   { 
     collection: "Users",
