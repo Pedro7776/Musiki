@@ -126,12 +126,12 @@ async function logar(req, res) {
 async function enviarEmail(req, res) {
   try {
     const { email } = req.body
-    const usuarioEncontrado = Usuario.findOne({ email: email })
+    const usuarioEncontrado = await Usuario.findOne({ email: email })
     if(!usuarioEncontrado){
-      return res.status(200)
+      return res.sendStatus(200)
     }
     await sendEmail(email)
-    res.status(200)
+    res.sendStatus(200)
   } catch(err) {
     res.status(500).json({ error: 'Erro ao enviar o email' })
   } 
@@ -162,12 +162,12 @@ async function mudarSenha(req, res) {
     const { email, token, novaSenha } = req.body
     const resultado = checkChangePassToken(email, token)
     if(resultado.ok){
-      const senhaHash = hashSenha(novaSenha)
+      const senhaHash = await hashSenha(novaSenha)
       if(senhaHash.error){
         return res.status(500).json({error: senhaHash.error})
       }
       await Usuario.findOneAndUpdate({ email: email }, { senha: senhaHash })
-      return res.status(200)
+      return res.sendStatus(200)
     }
     return res.status(500).json({
       error: 'Acesso a mudança de senha negado'
